@@ -49,7 +49,8 @@ with tf.Session() as sess:
     h = np.zeros([1, INTERNALSIZE * NLAYERS], dtype=np.float32)  # [ BATCHSIZE, INTERNALSIZE * NLAYERS]
     file = open('output-transcripts/' +str(randstr), "w")
     file.write("Is it Thursday yet? \n\n")
-    for i in range(1250):
+    #for i in range(1250):
+    for i in range(250):
         yo, h = sess.run(['Yo:0', 'H:0'], feed_dict={'X:0': y, 'pkeep:0': 1., 'Hin:0': h, 'batchsize:0': 1})
 
         # If sampling is be done from the topn most likely characters, the generated text
@@ -61,7 +62,7 @@ with tf.Session() as sess:
         c = my_txtutils.sample_from_probabilities(yo, topn=2)
         y = np.array([[c]])  # shape [BATCHSIZE, SEQLEN] with BATCHSIZE=1 and SEQLEN=1
         c = chr(my_txtutils.convert_to_alphabet(c))
-        print(c, end="")
+        #print(c, end="")
         file.write(c)
 
         if c == '\n':
@@ -69,8 +70,11 @@ with tf.Session() as sess:
         else:
             ncnt += 1
         if ncnt == 10:
-            print("")
+            #print("")
             file.write("")
             ncnt = 0
             
     file.close()
+    with open('output-transcripts/' +str(randstr), 'r') as transfile:
+        trans=transfile.read().replace('\n', '')
+        print(trans)
